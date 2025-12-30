@@ -1,2 +1,2 @@
-TARGET     = $$qtLibraryTarget(shadowMapping3)
+TARGET     = $$qtLibraryTarget(shadowMapping5)
 include(../common.pro)

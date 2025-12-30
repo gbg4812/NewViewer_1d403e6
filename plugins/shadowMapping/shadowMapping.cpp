@@ -81,6 +81,7 @@ void ShadowMapping::onPluginLoad() {
 
     GLWidget *g = glwidget();
     g->makeCurrent();
+    g->glEnable(GL_MULTISAMPLE);
 
     w = g->width();
     h = g->height();

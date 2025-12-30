@@ -42,11 +42,6 @@ GLWidget::GLWidget(const string &args)
     mainArgs = args;
     setFocusPolicy(Qt::ClickFocus); // per rebre events de teclat
 
-    QSurfaceFormat format;
-    format.setSamples(4);
-    setFormat(format);
-    context()->setFormat(format);
-
     string::size_type gradepos = args.find("--grade-shader ");
     grading = gradepos != string::npos;
     string::size_type gradepluginpos = args.find("--grade-plugin ");
