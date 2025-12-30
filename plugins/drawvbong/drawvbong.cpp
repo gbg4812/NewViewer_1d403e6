@@ -17,6 +17,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "drawvbong.h"
+#include "face.h"
 #include "glwidget.h"
 #include <cassert>
 #include <cmath>
@@ -42,7 +43,6 @@ void DrawVBOng::cleanUp() {
 
 bool DrawVBOng::drawObject(int i) {
     GLWidget &g = *glwidget();
-    g.makeCurrent();
     g.glBindVertexArray(VAOs[i]);
     g.glDrawArrays(GL_TRIANGLES, 0, numIndices[i]);
     g.glBindVertexArray(0);
@@ -51,7 +51,6 @@ bool DrawVBOng::drawObject(int i) {
 
 bool DrawVBOng::drawScene() {
     GLWidget &g = *glwidget();
-    g.makeCurrent();
     GLint program;
     g.glGetIntegerv(GL_CURRENT_PROGRAM, &program);
     GLint loc = g.glGetUniformLocation(program, "objectID");

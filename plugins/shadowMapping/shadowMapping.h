@@ -1,7 +1,10 @@
 #ifndef _SHADOWMAPPING_H
 #define _SHADOWMAPPING_H
 
+#include "camera.h"
+#include "materialDialog.h"
 #include "plugin.h"
+#include "qopenglshaderprogram.h"
 #include "qvector3d.h"
 
 class ShadowMapping : public QObject, public Plugin {
@@ -10,18 +13,15 @@ class ShadowMapping : public QObject, public Plugin {
     Q_INTERFACES(Plugin)
 
   public:
-    void onPluginLoad();
-    void preFrame();
-    void postFrame();
+    void onPluginLoad() override;
 
-    void onObjectAdd();
-    bool drawScene();
-    bool drawObject(int);
+    bool paintGL() override;
 
-    bool paintGL();
+    void onObjectAdd() override;
 
-    void keyPressEvent(QKeyEvent *);
-    void mouseMoveEvent(QMouseEvent *);
+    void keyReleaseEvent(QKeyEvent *) override;
+
+    void wheelEvent(QWheelEvent *) override;
 
   private:
     // add private methods and attributes here
@@ -30,16 +30,37 @@ class ShadowMapping : public QObject, public Plugin {
 
     GLuint debugQuadVAO;
     GLuint debugQuadVBO;
+    GLuint texCoordVBO;
 
-    GLuint debugProgram;
+    // env map
+    GLuint envMapTex;
+    bool envMapEnabled = false;
 
-    vector<QVector3D> debugQuad = {
-        QVector3D(-1, -1, 0), QVector3D(1, 1, 0),  QVector3D(-1, 1, 0),
-        QVector3D(-1, -1, 0), QVector3D(1, -1, 0), QVector3D(1, 1, 0),
+    int w, h;
+
+    gbgMaterial material;
+
+    QColor lightAmbient;
+    QColor lightColor;
+    float lightIntensity;
+
+    QOpenGLShaderProgram envProgram;
+    QOpenGLShaderProgram shadowMapProgram;
+    QOpenGLShaderProgram shadowRenderingProgram;
+
+    vector<float> debugQuad = {
+        -1, -1, 0, 1, 1, 0, -1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0,
+    };
+    vector<float> texCoordQuad = {
+        0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1,
     };
 
-    void setupDebugQuad();
-    void drawDebugQuad();
+    void setupFullScreenQuad();
+    void drawFullScreenQuad();
+
+    void setEnvContent(QImage texture);
+
+    Camera lightCamera;
 };
 
 #endif
