@@ -5,7 +5,7 @@ SUBDIRS += shaderLoader pluginLoader
 SUBDIRS += effectCRT
 SUBDIRS += showHelpNg
 SUBDIRS += alphaBlending
-SUBDIRS += shadowMapping
 
 # Afegiu a SUBDIRS els vostres plugins!
+SUBDIRS += shadowMapping
 

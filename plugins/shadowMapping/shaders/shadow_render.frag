@@ -29,7 +29,7 @@ void main(){
    //vec3 randColor = vec3(sin(objectID), cos(objectID), sin(objectID+0.2));
        
    
-   float texelSize = 1.0 / (float)textureSize(depthMap, 0).x;
+   float texelSize = 1.0 / float(textureSize(depthMap, 0).x);
    float shadow = 0;
    float counter = 0;
    vec3 n = normalize(vnorm);

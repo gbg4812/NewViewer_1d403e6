@@ -51,6 +51,8 @@ void ShadowMapping::keyReleaseEvent(QKeyEvent *event) {
             glwidget(), "Set Env Map", QDir::homePath(),
             "Image Files (*.png *.jpg *.bmp)");
         QImage env_map = QImage(file);
+        std::cout << "i'm here and the pointer is: "
+                  << (void *)env_map.constBits() << std::endl;
         setEnvContent(env_map);
     }
 
@@ -59,11 +61,13 @@ void ShadowMapping::keyReleaseEvent(QKeyEvent *event) {
 
 void ShadowMapping::setEnvContent(QImage texture) {
     envMapEnabled = true;
-    texture = texture.convertToFormat(QImage::Format_RGBA32FPx4);
+    texture =
+        texture.convertToFormat(QImage::Format_ARGB32).rgbSwapped().mirrored();
+
     GLWidget *g = glwidget();
     g->glBindTexture(GL_TEXTURE_2D, envMapTex);
     g->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, texture.width(),
-                    texture.height(), 0, GL_RGBA, GL_FLOAT,
+                    texture.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
                     texture.constBits());
     g->glBindTexture(GL_TEXTURE_2D, 0);
 }
