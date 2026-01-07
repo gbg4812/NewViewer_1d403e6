@@ -38,7 +38,6 @@ int main(int argc, char **argv) {
         // Specify an OpenGL 3.3 format using the appropriate profile.
         glFormat.setVersion(3, 3); // Should not be needed... In fact,
                                    // breaks show-help-ng!!
-        glFormat.setSamples(4);
         char *tmp = getenv("VPROFILE");
         glFormat.setProfile(QSurfaceFormat::CoreProfile);
         if (tmp != NULL) {

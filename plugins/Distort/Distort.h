@@ -16,33 +16,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIEWER_OBJECTSELECT_H
-#define VIEWER_OBJECTSELECT_H
+#ifndef _DISTORT_H
+#define _DISTORT_H
 
 #include "plugin.h"
 #include <QOpenGLShader>
 #include <QOpenGLShaderProgram>
+#include <QTimer>
 
-
-class ObjectSelect : public QObject, public Plugin
-{
+class Distort : public QObject, public Plugin {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "Plugin")
     Q_INTERFACES(Plugin)
 
-private:
-    void encodeID(const unsigned int, GLubyte *);
-    void decodeID(const GLubyte *, unsigned int &);
-    void selectDraw(GLWidget&);
-
-    QOpenGLShaderProgram* program;
-    QOpenGLShader* vs;
-    QOpenGLShader* fs;
-public:
+  public:
     void onPluginLoad();
-    void mouseReleaseEvent(QMouseEvent*);
     bool paintGL();
+
+  private:
+    QOpenGLShaderProgram *program;
+    QOpenGLShader *vs;
+    QOpenGLShader *fs;
+    GLuint textureId;
+
+    QTimer tmr;
 };
 
-
-#endif //VIEWER_OBJECTSELECT_H
+#endif

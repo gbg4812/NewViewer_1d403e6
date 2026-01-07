@@ -24,6 +24,14 @@ class DrawBounding: public QObject, public Plugin
 	 void mouseMoveEvent(QMouseEvent *);
   private:
 	// add private methods and attributes here
+	GLuint cubVAO;
+	GLuint cubVBO;
+	GLuint cubIDX;
+	
+	QOpenGLShaderProgram BBProgram;
+	
+	 std::vector<GLuint> idexos;
+	 std::vector<float> verts;
 };
 
 #endif

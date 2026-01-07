@@ -38,7 +38,7 @@ bool Draw_smooth::drawObject(int i)
     g.glBindVertexArray(VAOs[i]);
     if (useIndices)
     {
-        // TODO: draw triangles with indices...
+	glDrawElements(GL_TRIANGLES, numElements[i], GL_UNSIGNED_INT, (void*)0);
     }
     else
     {
@@ -116,12 +116,32 @@ void Draw_smooth::addVBO(unsigned int currentObject)
         //
         for (unsigned int i = 0; i < verts.size(); i++)
         {
-            // TODO: fill vertices, normals, colors and texCoords
+                const Vertex v = verts[i];
+                const Vector N = Ns[i];
+                const pair<float, float> TC = texcords[i];
+
+                Point P = v.coord();
+                vertices.push_back(P.x());
+                vertices.push_back(P.y());
+                vertices.push_back(P.z());
+
+                normals.push_back(N.x());
+                normals.push_back(N.y());
+                normals.push_back(N.z());
+
+                colors.push_back(fabs(N.x()));
+                colors.push_back(fabs(N.y()));
+                colors.push_back(fabs(N.z()));
+
+                texCoords.push_back(TC.first);
+                texCoords.push_back(TC.second);
         }
 
         for (auto&& f: obj.faces()) 
         {
-            // TODO: fill indices
+		indices.push_back(f.vertexIndex(0));
+		indices.push_back(f.vertexIndex(1));
+		indices.push_back(f.vertexIndex(2));
         }
     }
     else
@@ -140,10 +160,10 @@ void Draw_smooth::addVBO(unsigned int currentObject)
             // (without indices). This is because a shared vertex, belonging to 
             // multiple faces, requires a distinct normal for each face.
             
-            auto pushVertex = [&](int vertexIdx, int normalIdx, int tcIdx)
+            auto pushVertex = [&](int vertexIdx, Vector N, int tcIdx)
             {
                 const Vertex v = verts[vertexIdx];
-                const Vector N = Ns[normalIdx];
+
                 const pair<float, float> TC = texcords[tcIdx];
 
                 Point P = v.coord();
@@ -163,9 +183,10 @@ void Draw_smooth::addVBO(unsigned int currentObject)
                 texCoords.push_back(TC.second);
             };
 
-            pushVertex(f.vertexIndex(0), f.normalIndex(0), f.texcoordsIndex(0));
-            pushVertex(f.vertexIndex(1), f.normalIndex(1), f.texcoordsIndex(1));
-            pushVertex(f.vertexIndex(2), f.normalIndex(2), f.texcoordsIndex(2));
+            const Vector N = (Ns[f.normalIndex(0)] + Ns[f.normalIndex(1)] + Ns[f.normalIndex(2)])/3.0;
+            pushVertex(f.vertexIndex(0), N, f.texcoordsIndex(0));
+            pushVertex(f.vertexIndex(1), N, f.texcoordsIndex(1));
+            pushVertex(f.vertexIndex(2), N, f.texcoordsIndex(2));
         }
     }
     numElements.push_back(obj.faces().size() * 3); // it's all triangles...

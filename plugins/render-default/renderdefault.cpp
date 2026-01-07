@@ -26,7 +26,6 @@ bool RenderDefault::paintGL() {
     if (drawPlugin())
         drawPlugin()->drawScene();
 
-    std::cout << "default rendering" << std::endl;
     glwidget()->drawAxes();
 
     return true;

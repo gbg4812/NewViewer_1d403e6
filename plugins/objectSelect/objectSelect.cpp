@@ -19,16 +19,40 @@
 #include "objectSelect.h"
 #include <QCoreApplication>
 
+#include <GL/glu.h>
+
+
+#define printOpenGLError() printOglError(__FILE__, __LINE__)
+#define CHECK() printOglError(__FILE__, __LINE__,__FUNCTION__)
+#define DEBUG() cout << __FILE__ << " " << __LINE__ << " " << __FUNCTION__ << "\n";
+
+int printOglError(const char file[], int line, const char func[]) 
+{
+    GLenum glErr;
+    int    retCode = 0;
+
+    glErr = glGetError();
+    if (glErr != GL_NO_ERROR)
+    {
+        printf("glError in file %s @ line %d: %s function: %s\n",
+			     file, line, gluErrorString(glErr), func);
+        retCode = 1;
+    }
+    return retCode;
+}
+
+
+
 
 void ObjectSelect::encodeID(const unsigned int i, GLubyte * color) {
 	// complete this method to encode the object index (i) as a color
-    GLubyte R = 0; // complete
-    GLubyte G = 0; // complete
-    GLubyte B = 0; // complete
-    color[0] = R;
-    color[1] = G;
-    color[2] = B;
-    color[3] = 255;
+	GLubyte R = i; // complete
+	GLubyte G = 0; // complete
+	GLubyte B = 0; // complete
+	color[0] = R;
+	color[1] = G;
+	color[2] = B;
+    	color[3] = 255;
 }
 
 void ObjectSelect::decodeID(const GLubyte *color, unsigned int &i) {
@@ -37,7 +61,8 @@ void ObjectSelect::decodeID(const GLubyte *color, unsigned int &i) {
     unsigned int G = (unsigned int) color[1];
     unsigned int B = (unsigned int) color[2];
 	// compute i from R, G, B
-    i = 0; 
+
+    i = R; 
 }
 
 void ObjectSelect::onPluginLoad() {
@@ -62,8 +87,10 @@ void ObjectSelect::onPluginLoad() {
 }
 
 void ObjectSelect::selectDraw(GLWidget & g) {
+CHECK();
     // (b)
     g.glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
 
     // (c)
     program->bind();
@@ -79,6 +106,8 @@ void ObjectSelect::selectDraw(GLWidget & g) {
         program->setUniformValue("color", QVector4D(color[0]/255.0, color[1]/255., color[2]/255., 1.0));
         drawPlugin()->drawObject(i);
     }
+    
+    CHECK();
 }
 
 void ObjectSelect::mouseReleaseEvent(QMouseEvent* e) {
@@ -89,15 +118,20 @@ void ObjectSelect::mouseReleaseEvent(QMouseEvent* e) {
 
     GLWidget &g = *glwidget();
     g.makeCurrent();
+    glViewport(0, 0, g.width(), g.height());
 
     // (b) through (e)
     selectDraw(g);
 
+    g.makeCurrent();
     // (f)
     int x = e->x();
     int y = g.height() - e->y();
     GLubyte read[4];
-    glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, read);
+    CHECK();
+    g.glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, read);
+    CHECK();
+   
 
     // (g)
     if(read[3] == 255){
@@ -113,4 +147,10 @@ void ObjectSelect::mouseReleaseEvent(QMouseEvent* e) {
 
     // (h)
     g.update();
+}
+
+bool ObjectSelect::paintGL() {
+
+
+	return false;
 }

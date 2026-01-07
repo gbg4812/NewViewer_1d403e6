@@ -5,7 +5,7 @@ uniform sampler2D colorMap;
 
 uniform float SIZE;
 
-const int W = 4; // filter size: 2W*2W
+const int W = 10; // filter size: 2W*2W
 
 void main()
 {
@@ -28,7 +28,7 @@ void main()
     sum /= count;
     sum = pow(sum, vec4(5.0));
         
-    fragColor = mix(texture2D(colorMap, st), sum, 0.8);
+    fragColor = mix(texture2D(colorMap, st), sum, 0.9);
     
 }
 

@@ -43,6 +43,7 @@ void DrawVBOng::cleanUp() {
 
 bool DrawVBOng::drawObject(int i) {
     GLWidget &g = *glwidget();
+    g.makeCurrent();
     g.glBindVertexArray(VAOs[i]);
     g.glDrawArrays(GL_TRIANGLES, 0, numIndices[i]);
     g.glBindVertexArray(0);
